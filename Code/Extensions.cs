@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 public static class Extensions
 {
@@ -101,6 +102,32 @@ public static class Extensions
             gameObject.SetActive(active);
         }
     }
+    
+    /// <summary>
+    /// Destroys all child objects of a transform
+    /// </summary>
+    /// <param name="t">The transform whose children we want to destroy</param>
+    public static void DestroyAllChildren( this Transform t )
+    {
+        for ( int i = t.childCount - 1; i >= 0; i-- )
+        {
+            Object.Destroy( t.GetChild( i ).gameObject );
+        }
+    }
+
+#if UNITY_EDITOR
+    /// <summary>
+    /// Destroys all child objects of a transform in editor. WARNING: this can delete work, use with caution
+    /// </summary>
+    /// <param name="t">The transform whose children we want to destroy</param>
+    public static void DestroyAllChildrenInEditor( this Transform t )
+    {
+        for ( int i = t.childCount - 1; i >= 0; i-- )
+        {
+            Object.DestroyImmediate( t.GetChild( i ) );
+        }
+    }
+#endif
 
     #endregion
 
@@ -194,6 +221,32 @@ public static class Extensions
         }
 
         return enumerable;
+    }
+    
+    /// <summary>
+    /// Method of getting a shuffled element from an array without having to shuffle the collection itself.
+    /// Really useful when getting random, non-repeating elements of a large array.
+    /// Functionally equivalent to reservoir sampling.
+    /// </summary>
+    /// <param name="collection">The collection from which to select a random element</param>
+    /// <param name="index">The index of the pseudo-shuffled collection to return</param>
+    /// <param name="seed">The random seed. Keep constant during iteration.</param>
+    public static T GetNext<T>(this T[] collection, int index, int seed = 0)
+    {
+        int[] primes =
+        {
+            1453, 1459, 1471, 1481, 1483, 1487, 1489, 1493, 1499, 1511,
+            1523, 1531, 1543, 1549, 1553, 1559, 1567, 1571, 1579, 1583,
+            1597, 1601, 1607, 1609, 1613, 1619, 1621, 1627, 1637, 1657,
+        };
+
+        var increment = primes[seed % primes.Length] * primes[(seed + 1) % primes.Length];
+
+        var elementIndex = ((index + 1) * increment) % collection.Length;
+
+        T element = collection[elementIndex];
+
+        return element;
     }
 
     #endregion
