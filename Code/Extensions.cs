@@ -223,4 +223,13 @@ public static class Extensions
     }
 
     #endregion
+
+    #region Numbers
+
+    public static bool Approximately(this float sourceValue, float compareValue)
+    {
+        return Math.Abs(sourceValue - compareValue) < Mathf.Epsilon;
+    }
+
+    #endregion
 }
