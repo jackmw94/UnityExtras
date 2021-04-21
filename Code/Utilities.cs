@@ -62,4 +62,51 @@ public static class Utilities
         Color colour = Color.HSVToRGB(hue, constantSaturation, constantValue);
         return colour;
     }
+    
+    
+    /// <summary>
+    /// Finds the shortest distance from point to the line running from lineStart to lineEnd
+    /// </summary>
+    /// <param name="closest">The position on the line that has the shortest distance to point</param>
+    /// <returns>The shortest distance from the point to the line</returns>
+    public static float FindDistanceToLineSegment(Vector2 point, Vector2 lineStart, Vector2 lineEnd, out Vector2 closest)
+    {
+        float dx = lineEnd.x - lineStart.x;
+        float dy = lineEnd.y - lineStart.y;
+        if ((dx == 0) && (dy == 0))
+        {
+            // It's a point not a line segment.
+            closest = lineStart;
+            dx = point.x - lineStart.x;
+            dy = point.y - lineStart.y;
+            return Mathf.Sqrt(dx * dx + dy * dy);
+        }
+
+        // Calculate the t that minimizes the distance.
+        float t = ((point.x - lineStart.x) * dx + (point.y - lineStart.y) * dy) /
+                  (dx * dx + dy * dy);
+
+        // See if this represents one of the segment's
+        // end points or a point in the middle.
+        if (t < 0)
+        {
+            closest = new Vector2(lineStart.x, lineStart.y);
+            dx = point.x - lineStart.x;
+            dy = point.y - lineStart.y;
+        }
+        else if (t > 1)
+        {
+            closest = new Vector2(lineEnd.x, lineEnd.y);
+            dx = point.x - lineEnd.x;
+            dy = point.y - lineEnd.y;
+        }
+        else
+        {
+            closest = new Vector2(lineStart.x + t * dx, lineStart.y + t * dy);
+            dx = point.x - closest.x;
+            dy = point.y - closest.y;
+        }
+
+        return Mathf.Sqrt(dx * dx + dy * dy);
+    }
 }

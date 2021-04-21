@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -247,6 +249,28 @@ public static class Extensions
         T element = collection[elementIndex];
 
         return element;
+    }
+
+    /// <summary>
+    /// Creates a string from the elements of a collection, separated by the specified separator
+    /// </summary>
+    /// <param name="enumerable">The collection of elements from which to create a string</param>
+    /// <param name="elementSeparator">The string that separates the elements in the resultant string</param>
+    /// <param name="includeSeparatorAtEnd">Whether or not to add the separator string after the final element</param>
+    public static string JoinToString<T>(this IEnumerable<T> enumerable, string elementSeparator, bool includeSeparatorAtEnd = false)
+    {
+        StringBuilder stringBuilder = new StringBuilder();
+        var asArray = enumerable.ToArray();
+        for (var index = 0; index < asArray.Length; index++)
+        {
+            T elem = asArray[index];
+            stringBuilder.Append(elem);
+            if (index != asArray.Length - 1 || includeSeparatorAtEnd)
+            {
+                stringBuilder.Append(elementSeparator);
+            }
+        }
+        return stringBuilder.ToString();
     }
 
     #endregion
