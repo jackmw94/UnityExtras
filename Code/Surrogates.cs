@@ -107,6 +107,7 @@ public sealed class ColorSurrogate : ISerializationSurrogate
 public sealed class AudioClipSurrogate : ISerializationSurrogate
 {
     private const string ClipNameId = "clipName";
+    private const string ClipIsNullId = "clipIsNull";
     private const string SampleCountId = "sampleCount";
     private const string NumChannelsId = "numChannels";
     private const string FrequencyId = "frequency";
@@ -115,6 +116,14 @@ public sealed class AudioClipSurrogate : ISerializationSurrogate
     public void GetObjectData(object obj, SerializationInfo info, StreamingContext context)
     {
         AudioClip audioClip = (AudioClip) obj;
+        
+        bool clipIsNull = !audioClip;
+        info.AddValue(ClipIsNullId, clipIsNull);
+        
+        if (clipIsNull)
+        {
+            return;
+        }
         
         float[] audioSamples = new float[audioClip.samples];
         audioClip.GetData(audioSamples, 0);
@@ -132,6 +141,13 @@ public sealed class AudioClipSurrogate : ISerializationSurrogate
     public object SetObjectData(object obj, SerializationInfo info, StreamingContext context, ISurrogateSelector selector)
     {
         AudioClip audioClip = (AudioClip) obj;
+
+        bool clipIsNull = (bool) info.GetValue(ClipIsNullId, typeof(bool));
+        if (clipIsNull)
+        {
+            return null;
+        }
+
         byte[] sampleData = (byte[]) info.GetValue(SampleDataId, typeof(byte[]));
         string clipName = (string) info.GetValue(ClipNameId, typeof(string));
         int sampleCount = (int) info.GetValue(SampleCountId, typeof(int));
