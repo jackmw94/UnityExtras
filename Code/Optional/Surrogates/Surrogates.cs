@@ -29,14 +29,14 @@ public sealed class Vector2IntSurrogate : ISerializationSurrogate
     private const string XId = "x";
     private const string YId = "y";
     
-    public void GetObjectData(System.Object obj, SerializationInfo info, StreamingContext context)
+    public void GetObjectData(object obj, SerializationInfo info, StreamingContext context)
     {
         Vector2Int v2 = (Vector2Int) obj;
         info.AddValue(XId, v2.x);
         info.AddValue(YId, v2.y);
     }
     
-    public System.Object SetObjectData(System.Object obj, SerializationInfo info, StreamingContext context, ISurrogateSelector selector)
+    public System.Object SetObjectData(object obj, SerializationInfo info, StreamingContext context, ISurrogateSelector selector)
     {
         Vector2Int v2 = (Vector2Int) obj;
         v2.x = (int) info.GetValue(XId, typeof(int));
@@ -52,9 +52,7 @@ public sealed class Vector3Surrogate : ISerializationSurrogate
     private const string YId = "y";
     private const string ZId = "z";
     
-    // Method called to serialize a Vector3 object
-    public void GetObjectData(System.Object obj,
-        SerializationInfo info, StreamingContext context)
+    public void GetObjectData(object obj, SerializationInfo info, StreamingContext context)
     {
         Vector3 v3 = (Vector3) obj;
         info.AddValue(XId, v3.x);
@@ -62,10 +60,7 @@ public sealed class Vector3Surrogate : ISerializationSurrogate
         info.AddValue(ZId, v3.z);
     }
 
-    // Method called to deserialize a Vector3 object
-    public System.Object SetObjectData(System.Object obj,
-        SerializationInfo info, StreamingContext context,
-        ISurrogateSelector selector)
+    public System.Object SetObjectData(object obj, SerializationInfo info, StreamingContext context, ISurrogateSelector selector)
     {
         Vector3 v3 = (Vector3) obj;
         v3.x = (float) info.GetValue(XId, typeof(float));
@@ -83,7 +78,7 @@ public sealed class ColorSurrogate : ISerializationSurrogate
     private const string BId = "b";
     private const string AId = "a";
     
-    public void GetObjectData(System.Object obj, SerializationInfo info, StreamingContext context)
+    public void GetObjectData(object obj, SerializationInfo info, StreamingContext context)
     {
         Color color = (Color) obj;
         info.AddValue(RId, color.r);
@@ -92,7 +87,7 @@ public sealed class ColorSurrogate : ISerializationSurrogate
         info.AddValue(AId, color.a);
     }
     
-    public System.Object SetObjectData(System.Object obj, SerializationInfo info, StreamingContext context, ISurrogateSelector selector)
+    public System.Object SetObjectData(object obj, SerializationInfo info, StreamingContext context, ISurrogateSelector selector)
     {
         Color color = (Color) obj;
         color.r = (float) info.GetValue(RId, typeof(float));
