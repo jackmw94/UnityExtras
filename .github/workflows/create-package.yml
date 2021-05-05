@@ -20,7 +20,9 @@ jobs:
         with:
           package-path: 'a/output.unitypackage'
           include-files: metaList
-      - uses: actions/upload-artifact@master
+      - uses: quabug/create-upm-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          path: a
-          name: package
+          upm_package_path: a/
+          upm_tag_prefix: essential/v
