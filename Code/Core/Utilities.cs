@@ -109,4 +109,12 @@ public static class Utilities
 
         return Mathf.Sqrt(dx * dx + dy * dy);
     }
+	
+	/// <summary>
+	/// A wrapper around a hard-to-remember call to spherically lerp to a target. Speed reduces as the target gets closer to give a less mechanical and more natural rotation
+	/// </summary>
+	public static Quaternion SlerpToTarget(Quaternion currentRotation, Quaternion targetRotation, float speed)
+	{
+		return Quaternion.Slerp(currentRotation, targetRotation, 1f - Mathf.Exp(-speed * Time.deltaTime));
+	}
 }
