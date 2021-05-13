@@ -22,17 +22,29 @@ public sealed class Texture2DSurrogate : ISerializationSurrogate
 
     public static void AddTextureData(Texture2D texture, ref SerializationInfo info)
     {
-        info.AddValue(TextureNameId, texture.name);
-        info.AddValue(TextureFormatId, texture.format);
-        info.AddValue(AnsioLevelId, texture.anisoLevel);
-        info.AddValue(TextureSizeId,  new Vector2Int(texture.width, texture.height));
-        info.AddValue(TextureDataId, texture.GetRawTextureData());
+        if (texture)
+        {
+            info.AddValue(TextureDataId, texture.GetRawTextureData());
+            info.AddValue(TextureNameId, texture.name);
+            info.AddValue(TextureFormatId, texture.format);
+            info.AddValue(AnsioLevelId, texture.anisoLevel);
+            info.AddValue(TextureSizeId, new Vector2Int(texture.width, texture.height));
+        }
+        else
+        {
+            info.AddValue(TextureDataId, new byte[0]);
+        }
     }
 
     public static Texture2D GetTextureData(SerializationInfo info)
     {
         byte[] textureData = (byte[]) info.GetValue(TextureDataId, typeof(byte[]));
 
+        if (textureData.Length == 0)
+        {
+            return null;
+        }
+        
         string textureName = (string) info.GetValue(TextureNameId, typeof(string));
         TextureFormat textureFormat = (TextureFormat) info.GetValue(TextureFormatId, typeof(TextureFormat));
         int ansioLevel = (int) info.GetValue(AnsioLevelId, typeof(int));
