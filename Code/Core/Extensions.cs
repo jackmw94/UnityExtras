@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
@@ -306,6 +308,17 @@ public static class Extensions
     public static bool Approximately(this float sourceValue, float compareValue)
     {
         return Math.Abs(sourceValue - compareValue) < Mathf.Epsilon;
+    }
+
+    #endregion
+
+    #region TextMeshPro
+
+    public static void OnTMPInputFieldValueChanged(this TMP_InputField tmpInputField, UnityAction<string> callback)
+    {
+        TMP_InputField.OnChangeEvent valueChanged = new TMP_InputField.OnChangeEvent();
+        valueChanged.AddListener(callback);
+        tmpInputField.onValueChanged = valueChanged;
     }
 
     #endregion
