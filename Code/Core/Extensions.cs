@@ -101,7 +101,7 @@ public static class Extensions
     /// <param name="active">Whether or not it should be active</param>
     public static void SetActiveSafe(this GameObject gameObject, bool active)
     {
-        if (gameObject.activeSelf != active)
+        if (gameObject && gameObject.activeSelf != active)
         {
             gameObject.SetActive(active);
         }
