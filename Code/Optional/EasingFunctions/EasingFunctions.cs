@@ -10,8 +10,24 @@ using UnityEngine;
 public static class EasingFunctions
 {
     private const float ElasticConst = 2f * (float)Math.PI / 3f;
-
     
+    public enum EasingType
+    {
+        Linear,
+        Sine,
+        Cubic,
+        Expo,
+        Bounce,
+        Elastic
+    }
+
+    public enum EasingDirection
+    {
+        In,
+        Out,
+        InAndOut
+    }
+
     // Sine:
     public static float EaseInOutSine(float x)
     {
@@ -90,5 +106,25 @@ public static class EasingFunctions
         if (x < 2.5 / d1) return n1 * (x -= 2.25f / d1) * x + 0.9375f;
 
         return n1 * (x -= 2.625f / d1) * x + 0.984375f;
+    }
+    
+    public static float ConvertLinearToEased(EasingType easingType, EasingDirection easingDirection, float linear)
+    {
+        switch (easingType)
+        {
+            case EasingType.Linear: return linear;
+            case EasingType.Sine when easingDirection == EasingDirection.InAndOut: return EasingFunctions.EaseInOutSine(linear);
+            case EasingType.Sine when easingDirection == EasingDirection.In: return EasingFunctions.EaseInSine(linear);
+            case EasingType.Sine when easingDirection == EasingDirection.Out: return EasingFunctions.EaseOutSine(linear);
+            case EasingType.Cubic when easingDirection == EasingDirection.InAndOut: return EasingFunctions.EaseInOutCubic(linear);
+            case EasingType.Cubic when easingDirection == EasingDirection.In: return EasingFunctions.EaseInCubic(linear);
+            case EasingType.Cubic when easingDirection == EasingDirection.Out: return EasingFunctions.EaseOutCubic(linear);
+            case EasingType.Expo when easingDirection == EasingDirection.InAndOut: return EasingFunctions.EaseInOutExpo(linear);
+            case EasingType.Expo when easingDirection == EasingDirection.In: return EasingFunctions.EaseInExpo(linear);
+            case EasingType.Expo when easingDirection == EasingDirection.Out: return EasingFunctions.EaseOutExpo(linear);
+            case EasingType.Bounce: return EasingFunctions.EaseBounce(linear);
+            case EasingType.Elastic: return EasingFunctions.EaseElastic(linear);
+            default: throw new NoCaseException($"No case for easing type {easingType} and easing direction {easingDirection}");
+        }
     }
 }
