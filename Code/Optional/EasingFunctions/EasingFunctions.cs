@@ -113,18 +113,18 @@ public static class EasingFunctions
         switch (easingType)
         {
             case EasingType.Linear: return linear;
-            case EasingType.Sine when easingDirection == EasingDirection.InAndOut: return EasingFunctions.EaseInOutSine(linear);
-            case EasingType.Sine when easingDirection == EasingDirection.In: return EasingFunctions.EaseInSine(linear);
-            case EasingType.Sine when easingDirection == EasingDirection.Out: return EasingFunctions.EaseOutSine(linear);
-            case EasingType.Cubic when easingDirection == EasingDirection.InAndOut: return EasingFunctions.EaseInOutCubic(linear);
-            case EasingType.Cubic when easingDirection == EasingDirection.In: return EasingFunctions.EaseInCubic(linear);
-            case EasingType.Cubic when easingDirection == EasingDirection.Out: return EasingFunctions.EaseOutCubic(linear);
-            case EasingType.Expo when easingDirection == EasingDirection.InAndOut: return EasingFunctions.EaseInOutExpo(linear);
-            case EasingType.Expo when easingDirection == EasingDirection.In: return EasingFunctions.EaseInExpo(linear);
-            case EasingType.Expo when easingDirection == EasingDirection.Out: return EasingFunctions.EaseOutExpo(linear);
-            case EasingType.Bounce: return EasingFunctions.EaseBounce(linear);
-            case EasingType.Elastic: return EasingFunctions.EaseElastic(linear);
-            default: throw new NoCaseException($"No case for easing type {easingType} and easing direction {easingDirection}");
+            case EasingType.Sine when easingDirection == EasingDirection.InAndOut: return EaseInOutSine(linear);
+            case EasingType.Sine when easingDirection == EasingDirection.In: return EaseInSine(linear);
+            case EasingType.Sine when easingDirection == EasingDirection.Out: return EaseOutSine(linear);
+            case EasingType.Cubic when easingDirection == EasingDirection.InAndOut: return EaseInOutCubic(linear);
+            case EasingType.Cubic when easingDirection == EasingDirection.In: return EaseInCubic(linear);
+            case EasingType.Cubic when easingDirection == EasingDirection.Out: return EaseOutCubic(linear);
+            case EasingType.Expo when easingDirection == EasingDirection.InAndOut: return EaseInOutExpo(linear);
+            case EasingType.Expo when easingDirection == EasingDirection.In: return EaseInExpo(linear);
+            case EasingType.Expo when easingDirection == EasingDirection.Out: return EaseOutExpo(linear);
+            case EasingType.Bounce: return EaseBounce(linear);
+            case EasingType.Elastic: return EaseElastic(linear);
+            default: throw new ArgumentException($"No case for easing type {easingType} and easing direction {easingDirection}");
         }
     }
 }
