@@ -128,7 +128,7 @@ public static class Extensions
     {
         for ( int i = t.childCount - 1; i >= 0; i-- )
         {
-            Object.DestroyImmediate( t.GetChild( i ) );
+            Object.DestroyImmediate( t.GetChild( i ).gameObject );
         }
     }
 #endif
