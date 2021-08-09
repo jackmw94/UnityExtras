@@ -249,6 +249,16 @@ public static class Extensions
     /// <param name="seed">The random seed. Keep constant during iteration.</param>
     public static T GetNext<T>(this T[] collection, int index, int seed = 0)
     {
+        // todo: make a utilities class, this is not an extension
+
+        int elementIndex = GetNextIndex(collection, index, seed);
+        T element = collection[elementIndex];
+
+        return element;
+    }
+
+    public static int GetNextIndex<T>(this T[] collection, int index, int seed = 0)
+    {
         int[] primes =
         {
             1453, 1459, 1471, 1481, 1483, 1487, 1489, 1493, 1499, 1511,
@@ -260,9 +270,7 @@ public static class Extensions
 
         var elementIndex = ((index + 1) * increment) % collection.Length;
 
-        T element = collection[elementIndex];
-
-        return element;
+        return elementIndex;
     }
 
     /// <summary>
