@@ -38,11 +38,13 @@ namespace UnityExtras.Code.Core
             {
                 yield return null;
                 lerpValue = (Time.time - startTime) / duration;
+
+                float curvedValue = lerpValue;
                 if (zeroToOneCurve != null)
                 {
-                lerpValue = zeroToOneCurve.Evaluate(lerpValue);
+                    curvedValue = zeroToOneCurve.Evaluate(lerpValue);
                 }
-            var value = Mathf.Lerp(start, targetValue, lerpValue);
+                var value = Mathf.Lerp(start, targetValue, curvedValue);
                 applyValueFunction(value);
             }
 
