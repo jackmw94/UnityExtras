@@ -48,7 +48,12 @@ namespace UnityExtras.Code.Core
                 applyValueFunction(value);
             }
 
-            applyValueFunction(targetValue);
+            float curvedTarget = targetValue;
+            if (zeroToOneCurve != null)
+            {
+                curvedTarget = zeroToOneCurve.Evaluate(targetValue);
+            }
+            applyValueFunction(curvedTarget);
         }
 
         /// <summary>
