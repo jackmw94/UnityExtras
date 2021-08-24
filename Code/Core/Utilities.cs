@@ -126,5 +126,17 @@ namespace UnityExtras.Code.Core
         {
             return Quaternion.Slerp(currentRotation, targetRotation, 1f - Mathf.Exp(-speed * Time.deltaTime));
         }
+        
+        /// <summary>
+        /// A negative-safe modulo function
+        /// In C#: -1 % 3 == -1
+        /// This function accounts for negatives, ensuring that it returns a value between 0(inc) and m(exc)
+        /// Mod(-1, 3) == 2
+        /// </summary>
+        public static int Mod(int x, int m) 
+        {
+            int r = x % m;
+            return r<0 ? r+m : r;
+        }
     }
 }
