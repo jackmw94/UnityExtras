@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
+using Random = System.Random;
 
 namespace UnityExtras.Code.Core
 {
@@ -137,6 +138,18 @@ namespace UnityExtras.Code.Core
         {
             int r = x % m;
             return r<0 ? r+m : r;
+        }
+
+        /// <summary>
+        /// Generates a random long value. Good for unique ids.
+        /// </summary>
+        public static long RandomLong(int seed)
+        {
+            byte[] buf = new byte[8];
+            Random rand = new Random(seed);
+            rand.NextBytes(buf);
+            long longRand = BitConverter.ToInt64(buf, 0);
+            return longRand;
         }
     }
 }
