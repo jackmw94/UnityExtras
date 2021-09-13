@@ -75,6 +75,11 @@ namespace UnityExtras.Code.Core
             return v;
         }
 
+        public static string ToPreciseString(this Vector3 v)
+        {
+            return $"{v.x:F4}, {v.y:F4}, {v.z:F4}";
+        }
+
         #endregion
 
         #region GameObject
