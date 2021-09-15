@@ -151,5 +151,10 @@ namespace UnityExtras.Code.Core
             long longRand = BitConverter.ToInt64(buf, 0);
             return longRand;
         }
+
+        public static float UnclampedInverseLerp(double a, double b, float value)
+        {
+            return Math.Abs(a - b) > float.Epsilon ? (float) ((value - a) / (b - a)) : 0.0f;
+        }
     }
 }
