@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using Code.Debugging;
+using UnityEditor;
 using UnityEngine;
 using Random = System.Random;
 
@@ -155,6 +157,33 @@ namespace UnityExtras.Code.Core
         public static float UnclampedInverseLerp(double a, double b, float value)
         {
             return Math.Abs(a - b) > float.Epsilon ? (float) ((value - a) / (b - a)) : 0.0f;
+        }
+
+        public static long ConstructLongFromInts(int first, int second)
+        {
+            byte[] firstBytes = BitConverter.GetBytes(first);
+            byte[] secondBytes = BitConverter.GetBytes(second);
+
+            byte[] longBytes = new byte[sizeof(long)];
+            Buffer.BlockCopy(firstBytes, 0, longBytes, 0, firstBytes.Length);
+            Buffer.BlockCopy(secondBytes, 0, longBytes, firstBytes.Length, secondBytes.Length);
+
+            return BitConverter.ToInt64(longBytes, 0);
+        }
+        
+        public static (int, int) DeconstructLongToInts(long longValue)
+        {
+            byte[] longBytes = BitConverter.GetBytes(longValue);
+
+            byte[] firstBytes = new byte[sizeof(int)];
+            byte[] secondBytes = new byte[sizeof(int)];
+            Buffer.BlockCopy(longBytes, 0, firstBytes, 0, sizeof(int));
+            Buffer.BlockCopy(longBytes, sizeof(int), secondBytes, 0, sizeof(int));
+
+            int first = BitConverter.ToInt32(firstBytes, 0);
+            int second = BitConverter.ToInt32(secondBytes, 0);
+
+            return (first, second);
         }
     }
 }

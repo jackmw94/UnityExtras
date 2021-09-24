@@ -88,6 +88,17 @@ namespace UnityExtras.Code.Optional.EasingFunctions
     
     
         // Miscellaneous:
+        /// <summary>
+        /// Triangle wave peaking at x (mod 1) == 0.5
+        /// </summary>
+        /// <param name="x">Input will be normalised to between 0 and 1 using %. Frequency of 1 and peak at 0.5</param>
+        /// <returns>Triangle wave between 0 and 1</returns>
+        public static float Triangle(float x)
+        {
+            x = x % 1;
+            return x < 0.5f ? x * 2f : 2f - x * 2f;
+        }
+        
         public static float EaseElastic(float x)
         {
             return x.Approximately(0f)
