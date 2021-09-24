@@ -185,5 +185,13 @@ namespace UnityExtras.Code.Core
 
             return (first, second);
         }
+        
+        public static float GetSinePulse(float startTime, float frequency)
+        {
+            float pulseTime = Time.time - startTime;
+            float sinValue = Mathf.Sin(pulseTime * frequency - Mathf.PI / 2f);
+            float pulseValue = sinValue / 2f + 0.5f;
+            return pulseValue;
+        }
     }
 }
