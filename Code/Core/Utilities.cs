@@ -224,5 +224,12 @@ namespace UnityExtras.Code.Core
             float pulseValue = sinValue / 2f + 0.5f;
             return pulseValue;
         }
+
+        public static Pose LerpPose(Pose poseA, Pose poseB, float lerpValue)
+        {
+            Vector3 lerpedPosition = Vector3.Lerp(poseA.position, poseB.position, lerpValue);
+            Quaternion lerpedRotation = Quaternion.Lerp(poseA.rotation, poseB.rotation, lerpValue);
+            return new Pose(lerpedPosition, lerpedRotation);
+        }
     }
 }
