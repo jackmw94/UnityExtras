@@ -234,6 +234,19 @@ namespace UnityExtras.Code.Core
         }
 
         #endregion
+        
+        #region Coroutine
+
+        public static void RestartCoroutine(this MonoBehaviour monoBehaviour, ref Coroutine coroutine, IEnumerator routine)
+        {
+            if (coroutine != null)
+            {
+                monoBehaviour.StopCoroutine(coroutine);
+            }
+            coroutine = monoBehaviour.StartCoroutine(routine);
+        }
+
+        #endregion
 
         #region AnimationCurve
 
