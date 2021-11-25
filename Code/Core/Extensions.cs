@@ -154,7 +154,7 @@ namespace UnityExtras.Code.Core
         /// <param name="gameObject">The game object.</param>
         public static string GetFullName(this GameObject gameObject)
         {
-            var name = gameObject.name;
+            string name = gameObject.name;
             while (gameObject.transform.parent != null)
             {
                 gameObject = gameObject.transform.parent.gameObject;
@@ -317,21 +317,13 @@ namespace UnityExtras.Code.Core
         /// Really useful when getting random, non-repeating elements of a large array.
         /// Functionally equivalent to reservoir sampling.
         /// </summary>
-        /// <param name="collection">The collection from which to select a random element</param>
+        /// <param name="enumerableCollection">The collection from which to select a random element</param>
         /// <param name="index">The index of the pseudo-shuffled collection to return</param>
         /// <param name="seed">The random seed. Keep constant during iteration.</param>
-        public static T GetNext<T>(this T[] collection, int index, int seed = 0)
+        public static T GetNext<T>(this IReadOnlyList<T> enumerableCollection, int index, int seed = 0)
         {
-            int elementIndex = GetNextIndex(collection, index, seed);
-            T element = collection[elementIndex];
-
-            return element;
-        }
-        
-        public static T GetNext<T>(this List<T> collection, int index, int seed = 0)
-        {
-            int elementIndex = GetNextIndex(collection, index, seed);
-            T element = collection[elementIndex];
+            int elementIndex = GetNextIndex(enumerableCollection, index, seed);
+            T element = enumerableCollection[elementIndex];
 
             return element;
         }
@@ -345,9 +337,9 @@ namespace UnityExtras.Code.Core
                 1597, 1601, 1607, 1609, 1613, 1619, 1621, 1627, 1637, 1657,
             };
 
-            var increment = primes[seed % primes.Length] * primes[(seed + 1) % primes.Length];
+            int increment = primes[seed % primes.Length] * primes[(seed + 1) % primes.Length];
 
-            var elementIndex = (index + 1) * increment % collection.Count();
+            int elementIndex = (index + 1) * increment % collection.Count();
 
             return elementIndex;
         }
@@ -362,7 +354,7 @@ namespace UnityExtras.Code.Core
         {
             StringBuilder stringBuilder = new StringBuilder();
             var asArray = enumerable.ToArray();
-            for (var index = 0; index < asArray.Length; index++)
+            for (int index = 0; index < asArray.Length; index++)
             {
                 T elem = asArray[index];
                 stringBuilder.Append(elem);
@@ -406,14 +398,14 @@ namespace UnityExtras.Code.Core
 
         public static bool Approximately(this float sourceValue, float compareValue)
         {
-            return Math.Abs(sourceValue - compareValue) < Mathf.Epsilon;
+            return Mathf.Abs(sourceValue - compareValue) < Mathf.Epsilon;
         }
 
         #endregion
 
         #region TextMeshPro
 
-        public static void OnTMPInputFieldValueChanged(this TMP_InputField tmpInputField, UnityAction<string> callback)
+        public static void SetTMPInputFieldValueChangedListener(this TMP_InputField tmpInputField, UnityAction<string> callback)
         {
             TMP_InputField.OnChangeEvent valueChanged = new TMP_InputField.OnChangeEvent();
             valueChanged.AddListener(callback);
@@ -455,6 +447,141 @@ namespace UnityExtras.Code.Core
             scale.y = new Vector4(matrix.m01, matrix.m11, matrix.m21, matrix.m31).magnitude;
             scale.z = new Vector4(matrix.m02, matrix.m12, matrix.m22, matrix.m32).magnitude;
             return scale;
+        }
+
+        #endregion
+        
+        #region Bits and Flags
+
+        // Extension methods sourced from: https://stackoverflow.com/questions/93744/most-common-c-sharp-bitwise-operations-on-enums
+        /// <summary>
+        /// Checks whether an enum contains all flags in the argument '<paramref name="value">'
+        /// /// Only works on enums that don't extend alternate numerical type - must be an int type only
+        /// </summary>
+        /// <param name="original">The type we're checking against</param>
+        /// <param name="value">The flags that should all be present in the <paramref name="original"> enum</param>
+        /// <typeparam name="T">An enum type</typeparam>
+        /// <returns></returns>
+        public static bool AllFlagsSet<T>(this Enum original, T value)
+        {
+            try
+            {
+                return ((int)(object)original & (int)(object)value) == (int)(object)value;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Checks whether an enum contains some of the flags in the argument <paramref name="value">.
+        /// Only works on enums that don't extend alternate numerical type - must be an int type only
+        /// </summary>
+        /// <param name="original">The type we're checking against</param>
+        /// <param name="value">The flags that could be present in the <paramref name="original"> enum</param>
+        /// <typeparam name="T">An enum type</typeparam>
+        /// <returns></returns>
+        public static bool SomeFlagsSet<T>(this Enum original, T value)
+        {
+            try
+            {
+                int bitwiseOr = (int)(object)original & (int)(object)value;
+                return bitwiseOr != 0;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Sets flags defined by the <paramref name="value"> argument on the enum <paramref name="original">
+        /// /// Only works on enums that don't extend alternate numerical type - must be an int type only
+        /// </summary>
+        /// <param name="original">The enum we're applying the flags to</param>
+        /// <param name="value">The flags we're applying</param>
+        /// <typeparam name="T">An enum type</typeparam>
+        /// <returns></returns>
+        public static T SetFlag<T>(this Enum original, T value)
+        {
+            try
+            {
+                return (T)(object)((int)(object)original | (int)(object)value);
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException($"Could not append value from enumerated type '{typeof(T).Name}'.", ex);
+            }
+        }
+
+        public static bool IsFlagSet<T>(this Enum original, int value)
+        {
+            try
+            {
+                return ((int) (object) original & value) != 0;
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException($"Could not append value from enumerated type '{typeof(T).Name}'.", ex);
+            }
+        }
+
+        /// <summary>
+        /// Removes flags defined by the <paramref name="value"> argument on the enum <paramref name="original">
+        /// /// Only works on enums that don't extend alternate numerical type - must be an int type only
+        /// </summary>
+        /// <param name="original">The enum we're removing the flags from</param>
+        /// <param name="value">The flags we're removing</param>
+        /// <typeparam name="T">An enum type</typeparam>
+        /// <returns></returns>
+        public static T RemoveFlag<T>(this Enum original, T value)
+        {
+            try
+            {
+                return (T)(object)((int)(object)original & ~(int)(object)value);
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException($"Could not remove value from enumerated type '{typeof(T).Name}'.", ex);
+            }
+        }
+
+        /// <summary>
+        /// Checks whether there is a single flag set on a flags enum, no matter where the position of that flag is
+        /// </summary>
+        public static bool IsSingleFlagSet<T>(this T enumValue) where T : Enum
+        {
+            try
+            {
+                int intValue = (int)(object)enumValue;
+                return intValue != 0 && (intValue & (intValue - 1)) == 0;
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException($"Could not remove value from enumerated type '{typeof(T).Name}'.", ex);
+            }
+        }
+
+        /// <summary>
+        /// Checks whether there is a single flag set on a flags enum, no matter where the position of that flag is
+        /// </summary>
+        public static bool IsSingleFlagSetOnByte<T>(this T enumValue) where T : Enum
+        {
+            try
+            {
+                byte byteValue = (byte)(object)enumValue;
+                return byteValue != 0 && (byteValue & (byteValue - 1)) == 0;
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException($"Could not remove value from enumerated type '{typeof(T).Name}'.", ex);
+            }
+        }
+
+        public static T[] GetAllFlagValues<T>(this T _) where T : Enum
+        {
+            return Enum.GetValues(typeof(T)).Cast<T>().Where(p => p.IsSingleFlagSet()).ToArray();
         }
 
         #endregion
