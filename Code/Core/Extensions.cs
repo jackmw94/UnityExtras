@@ -87,7 +87,66 @@ namespace UnityExtras.Code.Core
 
         #endregion
 
-        #region GameObject and Transform
+        #region Transform
+
+        public static Pose GetPose(this Transform transform)
+        {
+            return new Pose(transform.position, transform.rotation);
+        }
+
+        public static Pose GetLocalPose(this Transform transform)
+        {
+            return new Pose(transform.localPosition, transform.localRotation);
+        }
+
+        public static void SetPose(this Transform transform, Pose pose)
+        {
+            transform.position = pose.position;
+            transform.rotation = pose.rotation;
+        }
+
+        public static void SetLocalPose(this Transform transform, Pose localPose)
+        {
+            transform.localPosition = localPose.position;
+            transform.localRotation = localPose.rotation;
+        }
+
+        /// <summary>
+        /// Destroys all child objects of a transform
+        /// </summary>
+        /// <param name="t">The transform whose children we want to destroy</param>
+        public static void DestroyAllChildren( this Transform t )
+        {
+            for ( int i = t.childCount - 1; i >= 0; i-- )
+            {
+                Object.Destroy( t.GetChild( i ).gameObject );
+            }
+        }
+        
+#if UNITY_EDITOR
+        /// <summary>
+        /// Destroys all child objects of a transform in editor. WARNING: this can delete work, use with caution
+        /// </summary>
+        /// <param name="t">The transform whose children we want to destroy</param>
+        public static void DestroyAllChildrenInEditor( this Transform t )
+        {
+            for ( int i = t.childCount - 1; i >= 0; i-- )
+            {
+                Object.DestroyImmediate( t.GetChild( i ).gameObject );
+            }
+        }
+#endif
+
+        public static void ResetLocalTransformInSpace(this Transform t, Matrix4x4 matrix4X4)
+        {
+            t.localPosition = matrix4X4.ExtractPosition();
+            t.localRotation = matrix4X4.ExtractRotation();
+            t.localScale = matrix4X4.ExtractScale();
+        }
+
+        #endregion
+
+        #region GameObject
 
         /// <summary>
         /// Returns the full hierarchy name of the game object.
@@ -130,39 +189,6 @@ namespace UnityExtras.Code.Core
                 gameObject.SetActive(active);
             }
         }
-    
-        /// <summary>
-        /// Destroys all child objects of a transform
-        /// </summary>
-        /// <param name="t">The transform whose children we want to destroy</param>
-        public static void DestroyAllChildren( this Transform t )
-        {
-            for ( int i = t.childCount - 1; i >= 0; i-- )
-            {
-                Object.Destroy( t.GetChild( i ).gameObject );
-            }
-        }
-
-        public static void ResetLocalTransformInSpace(this Transform t, Matrix4x4 matrix4X4)
-        {
-            t.localPosition = matrix4X4.ExtractPosition();
-            t.localRotation = matrix4X4.ExtractRotation();
-            t.localScale = matrix4X4.ExtractScale();
-        }
-
-#if UNITY_EDITOR
-        /// <summary>
-        /// Destroys all child objects of a transform in editor. WARNING: this can delete work, use with caution
-        /// </summary>
-        /// <param name="t">The transform whose children we want to destroy</param>
-        public static void DestroyAllChildrenInEditor( this Transform t )
-        {
-            for ( int i = t.childCount - 1; i >= 0; i-- )
-            {
-                Object.DestroyImmediate( t.GetChild( i ).gameObject );
-            }
-        }
-#endif
 
         #endregion
 
@@ -277,12 +303,13 @@ namespace UnityExtras.Code.Core
         /// <param name="func">The function to apply</param>
         public static IEnumerable<T> ApplyFunction<T>(this IEnumerable<T> enumerable, Action<T> func)
         {
-            foreach (T element in enumerable)
+            T[] enumerableArray = enumerable as T[] ?? enumerable.ToArray();
+            foreach (T element in enumerableArray)
             {
                 func(element);
             }
 
-            return enumerable;
+            return enumerableArray;
         }
     
         /// <summary>
