@@ -62,6 +62,11 @@ namespace UnityExtras.Code.Core
         {
             return new Vector2(vector3.x, vector3.y);
         }
+
+        public static Vector3 ElementWiseMultiply(this Vector3 v1, Vector3 v2)
+        {
+            return new Vector3(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z);
+        }
     
         public static Vector2 Rotate(this Vector2 v, float degrees)
         {
@@ -173,6 +178,20 @@ namespace UnityExtras.Code.Core
         {
             yield return Utilities.LerpOverTime(canvasGroup.alpha, target, fullTransitionDuration,
                 f => { canvasGroup.alpha = f; });
+        }
+
+        /// <summary>
+        /// Fades a canvas group's alpha from current to target value.
+        /// </summary>
+        /// <param name="canvasGroup">CanvasGroup that we're fading</param>
+        /// <param name="target">The final alpha value</param>
+        /// <param name="fullTransitionDuration">The time the fade would take across a 0->1 or 1->0 fade</param>
+        /// <param name="setInteractableOnComplete">Sets the canvas group's interactable and blocks raycast settings to this value once fade finished</param>
+        public static IEnumerator FadeCanvasAlpha(this CanvasGroup canvasGroup, float target, float fullTransitionDuration, bool setInteractableOnComplete)
+        {
+            yield return canvasGroup.FadeCanvasAlpha(target, fullTransitionDuration);
+            canvasGroup.interactable = setInteractableOnComplete;
+            canvasGroup.blocksRaycasts = setInteractableOnComplete;
         }
 
         /// <summary>
