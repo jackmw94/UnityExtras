@@ -77,9 +77,8 @@ namespace UnityExtras.Code.Core
         /// <summary>
         /// Finds the shortest distance from point to the line running from lineStart to lineEnd
         /// </summary>
-        /// <param name="closest">The position on the line that has the shortest distance to point</param>
         /// <returns>The shortest distance from the point to the line</returns>
-        public static float FindDistanceToLineSegment(Vector2 point, Vector2 lineStart, Vector2 lineEnd, out Vector2 closest)
+        public static float FindDistanceToLineSegment(Vector2 point, Vector2 lineStart, Vector2 lineEnd, bool limitToLineSegment, out Vector2 closest)
         {
             float dx = lineEnd.x - lineStart.x;
             float dy = lineEnd.y - lineStart.y;
@@ -98,13 +97,13 @@ namespace UnityExtras.Code.Core
 
             // See if this represents one of the segment's
             // end points or a point in the middle.
-            if (t < 0)
+            if (t < 0 && limitToLineSegment)
             {
                 closest = new Vector2(lineStart.x, lineStart.y);
                 dx = point.x - lineStart.x;
                 dy = point.y - lineStart.y;
             }
-            else if (t > 1)
+            else if (t > 1 && limitToLineSegment)
             {
                 closest = new Vector2(lineEnd.x, lineEnd.y);
                 dx = point.x - lineEnd.x;
@@ -118,6 +117,40 @@ namespace UnityExtras.Code.Core
             }
 
             return Mathf.Sqrt(dx * dx + dy * dy);
+        }
+        
+        /// <summary>
+        /// Two non-parallel lines which may or may not touch each other have a point on each line which are closest
+        /// to each other. This function finds those two points. If the lines are not parallel, the function 
+        /// outputs true, otherwise false.
+        /// </summary>
+        public static bool ClosestPointsOnTwoLines(out Vector3 closestPointLine1, out Vector3 closestPointLine2, Vector3 linePoint1, Vector3 lineVec1, Vector3 linePoint2, Vector3 lineVec2)
+        {
+            closestPointLine1 = Vector3.zero;
+            closestPointLine2 = Vector3.zero;
+
+            float a = Vector3.Dot(lineVec1, lineVec1);
+            float b = Vector3.Dot(lineVec1, lineVec2);
+            float e = Vector3.Dot(lineVec2, lineVec2);
+
+            float d = a * e - b * b;
+
+            if (d.Equals(0.0f))
+            {
+                return false;
+            }
+            
+            Vector3 r = linePoint1 - linePoint2;
+            float c = Vector3.Dot(lineVec1, r);
+            float f = Vector3.Dot(lineVec2, r);
+
+            float s = (b * f - c * e) / d;
+            float t = (a * f - c * b) / d;
+
+            closestPointLine1 = linePoint1 + lineVec1 * s;
+            closestPointLine2 = linePoint2 + lineVec2 * t;
+
+            return true;
         }
 	
         /// <summary>
@@ -134,9 +167,9 @@ namespace UnityExtras.Code.Core
         /// This function accounts for negatives, ensuring that it returns a value between 0(inc) and m(exc)
         /// Mod(-1, 3) == 2
         /// </summary>
-        public static int Mod(int x, int m) 
+        public static float Mod(float x, float m) 
         {
-            int r = x % m;
+            float r = x % m;
             return r<0 ? r+m : r;
         }
 
