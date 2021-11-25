@@ -282,15 +282,21 @@ namespace UnityExtras.Code.Core
         /// <param name="seed">The random seed. Keep constant during iteration.</param>
         public static T GetNext<T>(this T[] collection, int index, int seed = 0)
         {
-            // todo: make a utilities class, this is not an extension
+            int elementIndex = GetNextIndex(collection, index, seed);
+            T element = collection[elementIndex];
 
+            return element;
+        }
+        
+        public static T GetNext<T>(this List<T> collection, int index, int seed = 0)
+        {
             int elementIndex = GetNextIndex(collection, index, seed);
             T element = collection[elementIndex];
 
             return element;
         }
 
-        public static int GetNextIndex<T>(this T[] collection, int index, int seed = 0)
+        public static int GetNextIndex<T>(this IEnumerable<T> collection, int index, int seed = 0)
         {
             int[] primes =
             {
@@ -301,7 +307,7 @@ namespace UnityExtras.Code.Core
 
             var increment = primes[seed % primes.Length] * primes[(seed + 1) % primes.Length];
 
-            var elementIndex = ((index + 1) * increment) % collection.Length;
+            var elementIndex = (index + 1) * increment % collection.Count();
 
             return elementIndex;
         }
