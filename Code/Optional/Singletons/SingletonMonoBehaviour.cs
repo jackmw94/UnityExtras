@@ -5,12 +5,12 @@ namespace UnityExtras.Code.Optional.Singletons
 {
     public abstract class SingletonMonoBehaviour<T> : MonoBehaviour where T : MonoBehaviour
     {
-        private class SingletonNotAloneException : Exception
+        protected class SingletonNotAloneException : Exception
         {
             public SingletonNotAloneException(Type t) : base($"There are multiple instances of singleton type {t.Name}!") { }
         }
-    
-        private class SingletonNotPresentException : Exception
+
+        protected class SingletonNotPresentException : Exception
         {
             public SingletonNotPresentException(Type t) : base($"There is no instance of singleton type {t.Name}!") { }
         }
@@ -25,18 +25,28 @@ namespace UnityExtras.Code.Optional.Singletons
             // Throw exception if there is not an object of type T present
             if (instances.Length == 0)
             {
+                _instance = new Lazy<T>(CreateInstance);
                 throw new SingletonNotPresentException(typeof(T));
             }
 
             // Throw exception if there is multiple instances of type T present
             if (instances.Length > 1)
             {
+                _instance = new Lazy<T>(CreateInstance);
                 throw new SingletonNotAloneException(typeof(T));
             }
         
             return instances[0];
         }
-    
+
+        protected virtual void OnDestroy()
+        {
+            if (_instance.IsValueCreated && _instance.Value == this)
+            {
+                _instance = new Lazy<T>(CreateInstance);
+            }
+        }
+
         public static T Instance => _instance.Value;
     }
 }
