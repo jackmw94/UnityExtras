@@ -26,8 +26,7 @@ namespace UnityExtras.Code.Optional.Surrogates
             color.g = (float) info.GetValue(GId, typeof(float));
             color.b = (float) info.GetValue(BId, typeof(float));
             color.a = (float) info.GetValue(AId, typeof(float));
-            obj = color;
-            return obj;
+            return color;
         }
     }
 }
