@@ -174,6 +174,30 @@ namespace UnityExtras.Code.Core
         }
 
         /// <summary>
+        /// Determines whether an angle (in degrees) exists within the angle range
+        /// specified by the angle range vector, with x being from and y being to
+        /// in a clockwise direction. Range is inclusive
+        /// </summary>
+        /// <param name="angle"></param>
+        /// <param name="angleRange"></param>
+        /// <returns></returns>
+        public static bool IsAngleWithinAngleRange(float angle, Vector2 angleRange)
+        {
+            angle = Mod(angle, 360f);
+            angleRange.x = Mod(angleRange.x, 360f);
+            angleRange.y = Mod(angleRange.y, 360f);
+
+            if (angleRange.y > angleRange.x)
+            {
+                // no looping to handle
+                return angleRange.x <= angle && angleRange.y >= angle;
+            }
+
+            // range includes 0, have to handle the looping of degrees
+            return angle >= angleRange.x || angle <= angleRange.y;
+        }
+
+        /// <summary>
         /// A negative-safe modulo function
         /// In C#: -1 % 3 == -1
         /// This function accounts for negatives, ensuring that it returns a value between 0(inc) and m(exc)
