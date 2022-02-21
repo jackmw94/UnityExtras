@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using Random = System.Random;
 
-namespace UnityExtras.Code.Core
+namespace UnityExtras.Core
 {
     public static class Utilities
     {
@@ -178,9 +178,9 @@ namespace UnityExtras.Code.Core
         /// specified by the angle range vector, with x being from and y being to
         /// in a clockwise direction. Range is inclusive
         /// </summary>
-        /// <param name="angle"></param>
-        /// <param name="angleRange"></param>
-        /// <returns></returns>
+        /// <param name="angle">Angle in degrees</param>
+        /// <param name="angleRange">Degree range</param>
+        /// <returns>Whether the angle exists within the range from angleRange.x to angleRange.y</returns>
         public static bool IsAngleWithinAngleRange(float angle, Vector2 angleRange)
         {
             angle = Mod(angle, 360f);
@@ -193,7 +193,7 @@ namespace UnityExtras.Code.Core
                 return angleRange.x <= angle && angleRange.y >= angle;
             }
 
-            // range includes 0, have to handle the looping of degrees
+            // range includes 0, have to handle the looping from 360->0
             return angle >= angleRange.x || angle <= angleRange.y;
         }
 
@@ -206,7 +206,7 @@ namespace UnityExtras.Code.Core
         public static int Mod(int x, int m) 
         {
             int r = x % m;
-            return r<0 ? r+m : r;
+            return r < 0 ? r + m : r;
         }
         
         /// <summary>

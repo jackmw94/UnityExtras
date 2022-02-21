@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace UnityExtras.Code.Core
+namespace UnityExtras.Optional
 {
     public sealed class WaitUntilWithTimeout : CustomYieldInstruction
     {

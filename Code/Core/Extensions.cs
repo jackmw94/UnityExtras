@@ -9,7 +9,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
-namespace UnityExtras.Code.Core
+namespace UnityExtras.Core
 {
     public static class Extensions
     {

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using UnityEditor;
 #endif
 
-namespace UnityExtras.Code.Core
+namespace UnityExtras.Core
 {
     public static class EditorUtilities
     {
