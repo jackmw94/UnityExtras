@@ -311,6 +311,23 @@ namespace UnityExtras.Core
 
             return enumerableArray;
         }
+        
+        /// <summary>
+        /// Applies a function to each element of an enumerable
+        /// </summary>
+        /// <param name="enumerable">The enumerable collection whose elements we'll apply the function</param>
+        /// <param name="func">The function to apply with element index as second parameter</param>
+        public static IEnumerable<T> ApplyFunctionWithIndex<T>(this IEnumerable<T> enumerable, Action<T, int> func)
+        {
+            T[] enumerableArray = enumerable as T[] ?? enumerable.ToArray();
+            for (int index = 0; index < enumerableArray.Length; index++)
+            {
+                T element = enumerableArray[index];
+                func(element, index);
+            }
+
+            return enumerableArray;
+        }
     
         /// <summary>
         /// Method of getting a shuffled element from an array without having to shuffle the collection itself.
