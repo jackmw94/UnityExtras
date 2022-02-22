@@ -115,11 +115,11 @@ namespace UnityExtras.Core
         /// Destroys all child objects of a transform
         /// </summary>
         /// <param name="t">The transform whose children we want to destroy</param>
-        public static void DestroyAllChildren( this Transform t )
+        public static void DestroyAllChildren(this Transform t)
         {
             for ( int i = t.childCount - 1; i >= 0; i-- )
             {
-                Object.Destroy( t.GetChild( i ).gameObject );
+                GameObject.Destroy(t.GetChild(i).gameObject);
             }
         }
         
@@ -128,11 +128,11 @@ namespace UnityExtras.Core
         /// Destroys all child objects of a transform in editor. WARNING: this can delete work, use with caution
         /// </summary>
         /// <param name="t">The transform whose children we want to destroy</param>
-        public static void DestroyAllChildrenInEditor( this Transform t )
+        public static void DestroyAllChildrenInEditor(this Transform t)
         {
-            for ( int i = t.childCount - 1; i >= 0; i-- )
+            for (int i = t.childCount - 1; i >= 0; i--)
             {
-                Object.DestroyImmediate( t.GetChild( i ).gameObject );
+                GameObject.DestroyImmediate(t.GetChild( i ).gameObject);
             }
         }
 #endif
