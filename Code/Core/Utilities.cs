@@ -17,9 +17,9 @@ namespace UnityExtras.Core
         /// <param name="zeroToOneCurve">An optional curve to alter the lerp value. Note that if this doesn't map from 0->0 and 1->1 then there might be some snapping at the start or end</param>
         public static IEnumerator LerpOverTime(float initialValue, float targetValue, float zeroToOneDuration, Action<float> applyValueFunction, AnimationCurve zeroToOneCurve = null)
         {
-            var start = initialValue;
-            var lerpValue = 0f;
-            var startTime = Time.time;
+            float start = initialValue;
+            float lerpValue = 0f;
+            float startTime = Time.time;
 
             if (zeroToOneDuration <= 0f)
             {
@@ -33,7 +33,7 @@ namespace UnityExtras.Core
                 yield break;
             }
 
-            var duration = zeroToOneDuration * Mathf.Abs(targetValue - start);
+            float duration = zeroToOneDuration * Mathf.Abs(targetValue - start);
 
             while (lerpValue < 1f)
             {
@@ -45,7 +45,7 @@ namespace UnityExtras.Core
                 {
                     curvedValue = zeroToOneCurve.Evaluate(lerpValue);
                 }
-                var value = Mathf.Lerp(start, targetValue, curvedValue);
+                float value = Mathf.Lerp(start, targetValue, curvedValue);
                 applyValueFunction(value);
             }
 
