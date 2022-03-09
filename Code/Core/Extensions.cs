@@ -52,7 +52,7 @@ namespace UnityExtras.Core
         {
             return new Vector2(vector3.x, vector3.y);
         }
-    
+
         /// <summary>
         /// Converts a vector3 to a vector2, keeping only the X and Z elements. Useful for getting the top-down 2D position of a 3D point
         /// </summary>
@@ -67,12 +67,12 @@ namespace UnityExtras.Core
         {
             return new Vector3(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z);
         }
-    
+
         public static Vector2 Rotate(this Vector2 v, float degrees)
         {
             float sin = Mathf.Sin(degrees * Mathf.Deg2Rad);
             float cos = Mathf.Cos(degrees * Mathf.Deg2Rad);
-         
+
             float tx = v.x;
             float ty = v.y;
             v.x = (cos * tx) - (sin * ty);
@@ -112,17 +112,36 @@ namespace UnityExtras.Core
         }
 
         /// <summary>
+        /// Although it's a mouthful of a function name, the operation isn't as obscure as it may sound.
+        /// This function is to be called on a child transform passing in a pose that you want the child
+        /// transform to be at. The function will set the root transform's pose so that the child transform
+        /// is at the pose we passed. This preserves all local poses except that of the root transform.
+        /// </summary>
+        /// <param name="transform">The child transform whose pose we want to match the target pose</param>
+        /// <param name="targetPose">The pose that we want the child transform to be at</param>
+        public static void SetRootPoseSoChildIsAtPose(this Transform transform, Pose targetPose)
+        {
+            Transform transformRoot = transform.root;
+
+            Quaternion rotationOffset = Quaternion.Inverse(transform.rotation) * targetPose.rotation;
+            transformRoot.rotation = rotationOffset * transformRoot.rotation;
+
+            Vector3 positionOffset = transform.position - transformRoot.position;
+            transformRoot.position = targetPose.position - positionOffset;
+        }
+
+        /// <summary>
         /// Destroys all child objects of a transform
         /// </summary>
         /// <param name="t">The transform whose children we want to destroy</param>
         public static void DestroyAllChildren(this Transform t)
         {
-            for ( int i = t.childCount - 1; i >= 0; i-- )
+            for (int i = t.childCount - 1; i >= 0; i--)
             {
                 GameObject.Destroy(t.GetChild(i).gameObject);
             }
         }
-        
+
 #if UNITY_EDITOR
         /// <summary>
         /// Destroys all child objects of a transform in editor. WARNING: this can delete work, use with caution
@@ -132,7 +151,7 @@ namespace UnityExtras.Core
         {
             for (int i = t.childCount - 1; i >= 0; i--)
             {
-                GameObject.DestroyImmediate(t.GetChild( i ).gameObject);
+                GameObject.DestroyImmediate(t.GetChild(i).gameObject);
             }
         }
 #endif
@@ -260,7 +279,7 @@ namespace UnityExtras.Core
         }
 
         #endregion
-        
+
         #region Coroutine
 
         public static void RestartCoroutine(this MonoBehaviour monoBehaviour, ref Coroutine coroutine, IEnumerator routine)
@@ -311,7 +330,7 @@ namespace UnityExtras.Core
 
             return enumerableArray;
         }
-        
+
         /// <summary>
         /// Applies a function to each element of an enumerable
         /// </summary>
@@ -328,7 +347,7 @@ namespace UnityExtras.Core
 
             return enumerableArray;
         }
-    
+
         /// <summary>
         /// Method of getting a shuffled element from an array without having to shuffle the collection itself.
         /// Really useful when getting random, non-repeating elements of a large array.
@@ -439,15 +458,15 @@ namespace UnityExtras.Core
             forward.x = matrix.m02;
             forward.y = matrix.m12;
             forward.z = matrix.m22;
- 
+
             Vector3 upwards;
             upwards.x = matrix.m01;
             upwards.y = matrix.m11;
             upwards.z = matrix.m21;
- 
+
             return Quaternion.LookRotation(forward, upwards);
         }
- 
+
         public static Vector3 ExtractPosition(this Matrix4x4 matrix)
         {
             Vector3 position;
@@ -456,7 +475,7 @@ namespace UnityExtras.Core
             position.z = matrix.m23;
             return position;
         }
- 
+
         public static Vector3 ExtractScale(this Matrix4x4 matrix)
         {
             Vector3 scale;
@@ -467,7 +486,7 @@ namespace UnityExtras.Core
         }
 
         #endregion
-        
+
         #region Bits and Flags
 
         // Extension methods sourced from: https://stackoverflow.com/questions/93744/most-common-c-sharp-bitwise-operations-on-enums
@@ -483,7 +502,7 @@ namespace UnityExtras.Core
         {
             try
             {
-                return ((int)(object)original & (int)(object)value) == (int)(object)value;
+                return ((int) (object) original & (int) (object) value) == (int) (object) value;
             }
             catch
             {
@@ -503,7 +522,7 @@ namespace UnityExtras.Core
         {
             try
             {
-                int bitwiseOr = (int)(object)original & (int)(object)value;
+                int bitwiseOr = (int) (object) original & (int) (object) value;
                 return bitwiseOr != 0;
             }
             catch
@@ -524,7 +543,7 @@ namespace UnityExtras.Core
         {
             try
             {
-                return (T)(object)((int)(object)original | (int)(object)value);
+                return (T) (object) ((int) (object) original | (int) (object) value);
             }
             catch (Exception ex)
             {
@@ -556,7 +575,7 @@ namespace UnityExtras.Core
         {
             try
             {
-                return (T)(object)((int)(object)original & ~(int)(object)value);
+                return (T) (object) ((int) (object) original & ~(int) (object) value);
             }
             catch (Exception ex)
             {
@@ -571,7 +590,7 @@ namespace UnityExtras.Core
         {
             try
             {
-                int intValue = (int)(object)enumValue;
+                int intValue = (int) (object) enumValue;
                 return intValue != 0 && (intValue & (intValue - 1)) == 0;
             }
             catch (Exception ex)
@@ -587,7 +606,7 @@ namespace UnityExtras.Core
         {
             try
             {
-                byte byteValue = (byte)(object)enumValue;
+                byte byteValue = (byte) (object) enumValue;
                 return byteValue != 0 && (byteValue & (byteValue - 1)) == 0;
             }
             catch (Exception ex)
