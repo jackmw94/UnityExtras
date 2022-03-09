@@ -78,6 +78,7 @@ namespace UnityExtras.Core
         /// Finds the shortest distance from point to the line running from lineStart to lineEnd
         /// </summary>
         /// <returns>The shortest distance from the point to the line</returns>
+        [Obsolete("Use GetClosestPointOnLine instead. It uses 3D vectors and has a simpler implementation")]
         public static float FindDistanceToLineSegment(Vector2 point, Vector2 lineStart, Vector2 lineEnd, bool limitToLineSegment, out Vector2 closest)
         {
             float dx = lineEnd.x - lineStart.x;
@@ -117,6 +118,34 @@ namespace UnityExtras.Core
             }
 
             return Mathf.Sqrt(dx * dx + dy * dy);
+        }
+        
+        public static Vector3 GetClosestPointOnLine(Vector3 point, Vector3 lineStart, Vector3 lineEnd, bool keepPointWithLine)
+        {
+            Vector3 pointProjection = Vector3.Project(point - lineStart, lineEnd - lineStart);
+
+            if (!keepPointWithLine)
+            {
+                return lineStart + pointProjection;
+            }
+            
+            Vector3 lineVector = lineEnd - lineStart;
+            float projectionMagnitude = pointProjection.magnitude;
+            
+            if (Vector3.Dot(lineVector, pointProjection) < 0)
+            {
+                // point projection opposite direction to line, constrain to start of line
+                return lineStart;
+            }
+
+            if (projectionMagnitude > lineVector.magnitude)
+            {
+                // projection longer than line itself, constrain to end of line
+                return lineEnd;
+            }
+
+            // projection within line
+            return lineStart + pointProjection;
         }
         
         /// <summary>
