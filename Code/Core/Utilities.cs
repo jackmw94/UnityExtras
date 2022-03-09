@@ -72,8 +72,8 @@ namespace UnityExtras.Core
             Color colour = Color.HSVToRGB(hue, constantSaturation, constantValue);
             return colour;
         }
-    
-    
+
+
         /// <summary>
         /// Finds the shortest distance from point to the line running from lineStart to lineEnd
         /// </summary>
@@ -119,7 +119,14 @@ namespace UnityExtras.Core
 
             return Mathf.Sqrt(dx * dx + dy * dy);
         }
-        
+
+        /// <summary>
+        /// Gets the closest point on a line from a given point
+        /// </summary>
+        /// <param name="point">The point in space from which we're finding the closest point on the line</param>
+        /// <param name="lineStart">The location of the start of the line</param>
+        /// <param name="lineEnd">The location of the end of the line</param>
+        /// <param name="keepPointWithLine">Whether this line stops at start or end. If false, line runs through start and end points to infinity (or as close as 4 bytes takes you)</param>
         public static Vector3 GetClosestPointOnLine(Vector3 point, Vector3 lineStart, Vector3 lineEnd, bool keepPointWithLine)
         {
             Vector3 pointProjection = Vector3.Project(point - lineStart, lineEnd - lineStart);
@@ -128,10 +135,10 @@ namespace UnityExtras.Core
             {
                 return lineStart + pointProjection;
             }
-            
+
             Vector3 lineVector = lineEnd - lineStart;
             float projectionMagnitude = pointProjection.magnitude;
-            
+
             if (Vector3.Dot(lineVector, pointProjection) < 0)
             {
                 // point projection opposite direction to line, constrain to start of line
@@ -147,7 +154,7 @@ namespace UnityExtras.Core
             // projection within line
             return lineStart + pointProjection;
         }
-        
+
         /// <summary>
         /// Two non-parallel lines which may or may not touch each other have a point on each line which are closest
         /// to each other. This function finds those two points. If the lines are not parallel, the function 
@@ -168,7 +175,7 @@ namespace UnityExtras.Core
             {
                 return false;
             }
-            
+
             Vector3 r = linePoint1 - linePoint2;
             float c = Vector3.Dot(lineVec1, r);
             float f = Vector3.Dot(lineVec2, r);
@@ -181,7 +188,7 @@ namespace UnityExtras.Core
 
             return true;
         }
-	
+
         /// <summary>
         /// A wrapper around a hard-to-remember call to spherically lerp to a target. Speed reduces as the target gets closer to give a less mechanical and more natural rotation
         /// </summary>
@@ -189,17 +196,17 @@ namespace UnityExtras.Core
         {
             return Quaternion.Slerp(currentRotation, targetRotation, 1f - Mathf.Exp(-speed * Time.deltaTime));
         }
-        
+
         /// <summary>
         /// A negative-safe modulo function
         /// In C#: -1 % 3 == -1
         /// This function accounts for negatives, ensuring that it returns a value between 0(inc) and m(exc)
         /// Mod(-1, 3) == 2
         /// </summary>
-        public static float Mod(float x, float m) 
+        public static float Mod(float x, float m)
         {
             float r = x % m;
-            return r<0 ? r+m : r;
+            return r < 0 ? r + m : r;
         }
 
         /// <summary>
@@ -232,12 +239,12 @@ namespace UnityExtras.Core
         /// This function accounts for negatives, ensuring that it returns a value between 0(inc) and m(exc)
         /// Mod(-1, 3) == 2
         /// </summary>
-        public static int Mod(int x, int m) 
+        public static int Mod(int x, int m)
         {
             int r = x % m;
             return r < 0 ? r + m : r;
         }
-        
+
         /// <summary>
         /// Generates a random long value. Good for unique ids.
         /// </summary>
@@ -266,7 +273,7 @@ namespace UnityExtras.Core
 
             return BitConverter.ToInt64(longBytes, 0);
         }
-        
+
         public static (int, int) DeconstructLongToInts(long longValue)
         {
             byte[] longBytes = BitConverter.GetBytes(longValue);
@@ -281,7 +288,7 @@ namespace UnityExtras.Core
 
             return (first, second);
         }
-        
+
         public static float GetSinePulse(float startTime, float frequency)
         {
             float pulseTime = Time.time - startTime;
