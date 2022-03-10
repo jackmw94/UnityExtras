@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using TMPro;
@@ -117,17 +118,21 @@ namespace UnityExtras.Core
         /// transform to be at. The function will set the root transform's pose so that the child transform
         /// is at the pose we passed. This preserves all local poses except that of the root transform.
         /// </summary>
-        /// <param name="transform">The child transform whose pose we want to match the target pose</param>
+        /// <param name="childTransform">The child transform whose pose we want to match the target pose</param>
         /// <param name="targetPose">The pose that we want the child transform to be at</param>
-        public static void SetRootPoseSoChildIsAtPose(this Transform transform, Pose targetPose)
+        [SuppressMessage("ReSharper", "Unity.InefficientPropertyAccess")]
+        public static void SetRootPoseSoChildIsAtTargetPose(this Transform childTransform, Pose targetPose)
         {
-            Transform transformRoot = transform.root;
+            Transform root = childTransform.root;
+            Transform childParent = childTransform.parent;
 
-            Quaternion rotationOffset = Quaternion.Inverse(transform.rotation) * targetPose.rotation;
-            transformRoot.rotation = rotationOffset * transformRoot.rotation;
-
-            Vector3 positionOffset = transform.position - transformRoot.position;
-            transformRoot.position = targetPose.position - positionOffset;
+            childTransform.parent = null;
+            root.parent = childTransform;
+            
+            childTransform.SetPose(targetPose);
+            
+            root.parent = null;
+            childTransform.parent = childParent;
         }
 
         /// <summary>
